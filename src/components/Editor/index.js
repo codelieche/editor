@@ -48,7 +48,7 @@ export function MyEditor(props){
             {/* 头部的按钮 */}
             <div>
                 {/* 按钮 */}
-                <ButtonTools editor={editor} display={display} setDisplay={setDisplay} />
+                <ButtonTools editor={editor} display={display} setDisplay={setDisplay} uploadFileUrl={props.uploadFileUrl} />
             </div>
 
             <div className="content">

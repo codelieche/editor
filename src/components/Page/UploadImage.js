@@ -74,6 +74,61 @@ export const UploadImageTabs = (props) => {
         
         // 发起Post请求
         // let url = "/api/v1/docs/image/upload";
+        let url = props.uploadFileUrl;
+        if(!url){
+            // 未传递url
+            message.warn("Edtiror为传递uploadFileUrl参数");
+            // 创建一个base64的连接
+            if(fileListData.length > 0){
+                let uploadImageUrl = URL.createObjectURL(fileListData[0]);
+                if(props.afterUploadHandle){
+                    props.afterUploadHandle(uploadImageUrl);
+                }else{
+                    console.log("未传递：afterUploadHandle");
+                }
+            }else{
+                // 图片为空
+                message.warn("传入的图片为空");
+            }
+            
+        }else{
+            // 执行上传图片操作，需要返回：file或者qiniu字段
+            fetch(
+                url, {
+                    method: "POST",
+                    body: formData,
+                    // headers: {
+                    //     "Content-Type": "multipart/form-data"
+                    // },
+                    credentials: 'include' // 携带cookie
+                }
+            ).then(response => {
+                return response.json();
+            })
+              .then(responseData => {
+                console.log(responseData);
+                // 执行得到图片链接后的：后续的操作
+                if(responseData.qiniu){
+                    if(props.afterUploadHandle){
+                        props.afterUploadHandle(responseData.qiniu);
+                    }else{
+                        console.log("未传递：afterUploadHandle");
+                    }
+                }else if(responseData.file){
+                    if(props.afterUploadHandle){
+                        props.afterUploadHandle(responseData.file);
+                    }else{
+                        console.log("未传递：afterUploadHandle");
+                    }
+                }else{
+                    message.warn("上传图片的返回结果file和qiniu字段为空");
+                }
+              })
+                .catch(err => {
+                    console.log(err);
+                    message.warn("fetch发起post上传图片出错")
+                })
+        }
         // fetch.Post(url, formData, {})
         //   .then(responseData => {
         //       console.log(responseData);
@@ -97,7 +152,7 @@ export const UploadImageTabs = (props) => {
         //     .catch(err => {
         //         console.log(err);
         //     })
-    }, [fileListData])
+    }, [fileListData, props])
 
     const handleSubmit = useCallback((e) => {
         // console.log(e);

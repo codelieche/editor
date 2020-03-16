@@ -135,7 +135,8 @@ export const ButtonTools = function(props) {
               historySize={historySize}
               setHistorySize={setHistorySize}
               setModalVisible={setModalVisible}
-              editor={props.editor}/>
+              editor={props.editor}
+              />
         );
     });
 
@@ -206,6 +207,7 @@ export const ButtonTools = function(props) {
               visible={modalVisible} 
               handleAfterClose={() => setModalVisible(false)}
               afterUploadHandle={afterUploadImageHandle}
+              uploadFileUrl={props.uploadFileUrl} // 上传图片的url
             />
         </div>
     )
